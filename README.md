@@ -18,6 +18,8 @@ Phoenix hipster stack commes with an example app [SEE IT HERE](http://phoenix-hi
 The app is a port of the node.js app built in the [Building Data-driven React Applications with Relay, GraphQL, and Flux](http://app.pluralsight.com/courses/react-apps-with-relay-graphql-flux) course from Pluralsight.
 The app is running on a 512mb single core droplet on digitalocean.
 
+*More instressed in Elm ?* Check out [elm-hipster-stack](https://github.com/carleryd/elm-hipster-stack)
+
 ### Getting Started
 
 Clone this repo then:
