@@ -5,7 +5,7 @@ defmodule App.Type.LinkConnection do
   def get do
     %{
       name: "Link",
-      node_type: App.Type.Link.get,
+      node_type: {App.Type.Link, :get},
       edge_fields: %{},
       connection_fields: %{},
       resolve_node: nil,

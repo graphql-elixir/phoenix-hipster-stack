@@ -17,29 +17,34 @@ defmodule App.PublicSchema do
   }
 
   def node_interface do
-    Node.define_interface(fn(obj) ->
-      IO.puts "node_interface"
-      IO.inspect obj
-      case obj do
-        @store ->
-          App.Type.Store.get
-        _ ->
-          %{}
-      end
-    end)
+    Node.define_interface({App.PublicSchema, :derp})
+  end
+
+  def derp(obj) do
+        case obj do
+          @store ->
+            {App.Type.Store, :get}
+          _ ->
+            %{}
+        end
   end
 
   def node_field do
-    Node.define_field(node_interface, fn (_item, args, _ctx) ->
-      [type, id] = Node.from_global_id(args[:id])
-      case type do
-        "Store" ->
-          @store
-        _ ->
-          %{}
-      end
-    end)
+    Node.define_field(node_interface, {App.PublicSchema, :herp} )
   end
+
+  def herp(args) do
+    [type, id] = Node.from_global_id(args[:id])
+    case type do
+      "Store" ->
+        @store
+      _ ->
+        %{}
+    end
+  end
+
+
+
 
   def schema do
     %Schema{
@@ -48,7 +53,7 @@ defmodule App.PublicSchema do
         fields: %{
           node: node_field,
           store: %{
-            type: App.Type.Store.get,
+            type: {App.Type.Store, :get},
             resolve: fn (doc, _args, _) ->
               @store
             end
@@ -75,7 +80,7 @@ defmodule App.PublicSchema do
                 end
               },
               store: %{
-                type: App.Type.Store.get,
+                type: {App.Type.Store, :get},
                 resolve: fn (obj, _args, _info) ->
                   @store
                 end
