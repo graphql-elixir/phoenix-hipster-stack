@@ -15,7 +15,11 @@ defmodule App.Router do
 
   scope "/graphql" do
     pipe_through :api
-    forward "/", GraphQL.Plug, schema: &App.PublicSchema.schema/0
+
+    get "/", GraphQL.Plug.Endpoint,
+      schema: {App.PublicSchema, :schema}
+    post "/", GraphQL.Plug.Endpoint,
+      schema: {App.PublicSchema, :schema}
   end
 
   scope "/", App do
