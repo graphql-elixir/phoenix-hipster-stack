@@ -5,19 +5,21 @@ defmodule App.Query.Link do
   def get do
     %{
       type: %List{ofType: App.Type.Link.get},
-      resolve: fn (_, args, _) ->
-        table("links")
-        |> Query.limit(args.first)
-        |> DB.run
-        |> DB.handle_graphql_resp
-      end
+      resolve: { App.Query.Link, :resolve }
     }
   end
 
   def get_from_id(id) do
     table("links")
-    |> Query.get(id)
-    |> DB.run
-    |> DB.handle_graphql_resp
+        |> Query.get(id)
+        |> DB.run
+        |> DB.handle_graphql_resp
+  end
+
+  def resolve(_, args, _) do
+        table("links")
+        |> Query.limit(args.first)
+        |> DB.run
+        |> DB.handle_graphql_resp
   end
 end

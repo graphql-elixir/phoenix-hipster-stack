@@ -44,7 +44,9 @@ defmodule App.PublicSchema do
   end
 
 
-
+  def resolve_store(doc, _args, _) do
+        @store
+  end
 
   def schema do
     %Schema{
@@ -54,9 +56,7 @@ defmodule App.PublicSchema do
           node: node_field,
           store: %{
             type: {App.Type.Store, :get},
-            resolve: fn (doc, _args, _) ->
-              @store
-            end
+            resolve: {App.PublicSchema, :resolve_store}
           }
         }
       },
@@ -72,34 +72,38 @@ defmodule App.PublicSchema do
             output_fields: %{
               linkEdge: %{
                 type: App.Type.LinkConnection.get[:edge_type],
-                resolve: fn (obj, _args, _info) ->
-                  %{
-                    node: App.Query.Link.get_from_id(first(obj[:generated_keys])),
-                    cursor: first(obj[:generated_keys])
-                  }
-                end
+                resolve: {App.PublicSchema, :output_fields_resolve}
               },
               store: %{
                 type: {App.Type.Store, :get},
-                resolve: fn (obj, _args, _info) ->
-                  @store
-                end
+                resolve: {App.PublicSchema, :resolve_store}
               }
             },
-            mutate_and_get_payload: fn(input, _info) ->
-              Query.table("links")
-                |> Query.insert(
-                  %{
-                    title: input["title"],
-                    url: input["url"],
-                    timestamp: TimeHelper.currentTime
-                    })
-                |> DB.run
-                |> DB.handle_graphql_resp
-            end
+            mutate_and_get_payload: {App.PublicSchema, :mutate_and_get_payload}
           })
         }
       }
     }
   end
+
+  def output_fields_resolve(obj, _args, _info) do
+      %{
+        node: App.Query.Link.get_from_id(first(obj[:generated_keys])),
+        cursor: first(obj[:generated_keys])
+      }
+  end
+
+
+  def mutate_and_get_payload(input, _info) do
+    Query.table("links")
+      |> Query.insert(
+        %{
+          title: input["title"],
+          url: input["url"],
+          timestamp: TimeHelper.currentTime
+          })
+      |> DB.run
+      |> DB.handle_graphql_resp
+  end
+
 end

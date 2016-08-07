@@ -18,7 +18,7 @@ defmodule App.Mixfile do
   # Type `mix help compile.app` for more information
   def application do
     [mod: {App, []},
-     applications: [:phoenix, :phoenix_html, :cowboy, :logger,
+     applications: [:phoenix, :phoenix_html, :phoenix_pubsub, :cowboy, :logger,
                     :plug_graphql, :phoenix_ecto, :postgrex, :tzdata]]
   end
 
@@ -31,6 +31,7 @@ defmodule App.Mixfile do
   # Type `mix help deps` for examples and options
   defp deps do
     [{:phoenix, "~> 1.2"},
+     {:phoenix_pubsub, "~> 1.0"},
      {:phoenix_ecto, "~> 2.0"},
      {:postgrex, ">= 0.0.0"},
      {:phoenix_html, "~> 2.2"},

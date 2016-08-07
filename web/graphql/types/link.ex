@@ -12,12 +12,14 @@ defmodule App.Type.Link do
           url: @type_string,
           createdAt: %{
             type: %GraphQL.Type.String{},
-            resolve: fn( obj, _args, _info) ->
-              obj.timestamp
-            end
+            resolve: { App.Type.Link, :resolve}
           }
         }
       }
   end
 
+
+  def resolve( obj, _args, _info) do
+        obj.timestamp
+  end
 end
