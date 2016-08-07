@@ -17,31 +17,31 @@ defmodule App.PublicSchema do
   }
 
   def node_interface do
-    Node.define_interface({App.PublicSchema, :derp})
-  end
-
-  def derp(obj) do
+    Node.define_interface(fn(obj)->
         case obj do
           @store ->
             {App.Type.Store, :get}
           _ ->
             %{}
         end
+    end)
   end
+
+
 
   def node_field do
-    Node.define_field(node_interface, {App.PublicSchema, :herp} )
+    Node.define_field(node_interface, fn(args) ->
+        [type, id] = Node.from_global_id(args[:id])
+        case type do
+          "Store" ->
+            @store
+          _ ->
+            %{}
+        end
+
+    end )
   end
 
-  def herp(args) do
-    [type, id] = Node.from_global_id(args[:id])
-    case type do
-      "Store" ->
-        @store
-      _ ->
-        %{}
-    end
-  end
 
 
   def resolve_store(doc, _args, _) do
