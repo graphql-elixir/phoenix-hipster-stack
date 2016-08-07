@@ -3,7 +3,7 @@ defmodule App.Type.Link do
   @type_string %{type: %GraphQL.Type.String{}}
   alias GraphQL.Type.ObjectType
 
-  def get do
+  def type do
     %ObjectType{
         name: "Link",
         fields: %{

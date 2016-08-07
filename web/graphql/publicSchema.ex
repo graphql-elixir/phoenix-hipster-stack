@@ -55,7 +55,7 @@ defmodule App.PublicSchema do
         fields: %{
           node: node_field,
           store: %{
-            type: {App.Type.Store, :get},
+            type: App.Type.Store,
             resolve: {App.PublicSchema, :resolve_store}
           }
         }
@@ -75,7 +75,7 @@ defmodule App.PublicSchema do
                 resolve: {App.PublicSchema, :output_fields_resolve}
               },
               store: %{
-                type: {App.Type.Store, :get},
+                type: App.Type.Store,
                 resolve: {App.PublicSchema, :resolve_store}
               }
             },
