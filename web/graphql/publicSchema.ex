@@ -20,7 +20,7 @@ defmodule App.PublicSchema do
     Node.define_interface(fn(obj)->
         case obj do
           @store ->
-            {App.Type.Store, :get}
+            App.Type.Store.type
           _ ->
             %{}
         end
@@ -30,7 +30,7 @@ defmodule App.PublicSchema do
 
 
   def node_field do
-    Node.define_field(node_interface, fn(args) ->
+    Node.define_field(node_interface, fn(_item, args, _ctx) ->
         [type, id] = Node.from_global_id(args[:id])
         case type do
           "Store" ->
@@ -72,14 +72,16 @@ defmodule App.PublicSchema do
             output_fields: %{
               linkEdge: %{
                 type: App.Type.LinkConnection.get[:edge_type],
-                resolve: {App.PublicSchema, :output_fields_resolve}
+                resolve: fn(input, args, info) -> output_fields_resolve(input, args, info) end
               },
               store: %{
                 type: App.Type.Store,
-                resolve: {App.PublicSchema, :resolve_store}
+                resolve: fn(input, args, info) -> resolve_store(input, args, info) end
               }
             },
-            mutate_and_get_payload: {App.PublicSchema, :mutate_and_get_payload}
+            mutate_and_get_payload: fn(input, info) ->
+                mutate_and_get_payload(input, info)
+            end
           })
         }
       }
